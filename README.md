@@ -1,102 +1,122 @@
 # 💬 Real-Time Chat Application
 
-A real-time chat application built with **Django**, **Django Channels**, **WebSockets**, and **Redis**.
+![Python](https://img.shields.io/badge/Python-3.12-blue?style=flat-square&logo=python)
+![Django](https://img.shields.io/badge/Django-6.0-green?style=flat-square&logo=django)
+![Django Channels](https://img.shields.io/badge/Django%20Channels-4.3-red?style=flat-square)
+![Redis](https://img.shields.io/badge/Redis-7.0-red?style=flat-square&logo=redis)
+![WebSocket](https://img.shields.io/badge/WebSocket-Enabled-brightgreen?style=flat-square)
+
+A full-stack real-time chat application built with **Django**, **Django Channels**, and **WebSockets**. Users can register, create chat rooms, and exchange messages instantly without any page refresh.
 
 ---
 
-## 🚀 Tech Stack
+## 🚀 Live Demo
 
-| Technology       | Purpose                                      |
-|-----------------|----------------------------------------------|
-| Django           | Core web framework (routing, ORM, auth)      |
-| Django Channels  | Upgrades Django to handle WebSockets (ASGI)  |
-| Daphne           | ASGI server (replaces default Django server) |
-| Redis            | Channel layer — message bus between users    |
-| SQLite           | Database (stores users, rooms, messages)     |
-| Vanilla JS       | WebSocket client in the browser              |
+> Coming soon — [TheScratchCoder.pythonanywhere.com](#)
 
 ---
 
-## 🏗️ How It Works
+## 🖥️ Screenshots
+
+### 🔐 Login Page
+Clean and minimal login interface
+
+### 🏠 Chat Rooms
+Browse and join available chat rooms
+
+### 💬 Chat Room
+Real-time messaging with Slack-inspired UI — messages appear instantly for all users
+
+---
+
+## ⚙️ Tech Stack
+
+| Technology | Purpose |
+|---|---|
+| **Django 6.0** | Core web framework — routing, ORM, authentication |
+| **Django Channels 4.3** | Upgrades Django from WSGI → ASGI for WebSocket support |
+| **Daphne** | ASGI server — handles both HTTP and WebSocket connections |
+| **Redis** | Channel layer — message bus that broadcasts to all room members |
+| **SQLite** | Database — stores users, rooms, and message history |
+| **Vanilla JS** | WebSocket client in the browser |
+
+---
+
+## 🏗️ Architecture
 
 ```
-Browser (Vanilla JS WebSocket)
-         ↕  WebSocket Connection
-Django Channels (ASGI via Daphne)
-         ↕  Channel Layer
-       Redis  ← broadcasts to all room members
-         ↕
-       SQLite ← saves message history
+Browser (Vanilla JS WebSocket Client)
+              ↕  WebSocket
+   Django Channels (ASGI via Daphne)
+              ↕  Channel Layer
+            Redis  ←── broadcasts messages to all room members
+              ↕
+           SQLite  ←── saves message history
 ```
 
-**Key concept:** Django normally uses WSGI (synchronous, HTTP only).
-Django Channels upgrades it to **ASGI** which supports **WebSockets** —
-persistent two-way connections that enable real-time messaging without polling.
+**Key concept:** Django by default is synchronous (WSGI). Django Channels upgrades it to **ASGI** which enables persistent **WebSocket** connections — making real-time messaging possible without polling.
 
 ---
 
-## ✅ Features
+## ✨ Features
 
-- User Registration & Login (Django built-in auth)
-- Create & Join Chat Rooms
-- Real-Time messaging via WebSocket
-- Message history (last 20 messages loaded on join)
-- Clean WhatsApp-inspired UI
-- XSS protection on all messages
+- ✅ User Registration & Login (Django built-in auth)
+- ✅ Create & Join Chat Rooms
+- ✅ Real-Time messaging via WebSocket
+- ✅ Message history loaded on room join
+- ✅ Slack-inspired clean UI
+- ✅ XSS protection on all messages
+- ✅ Auto-scroll to latest message
+- ✅ Instant message delivery (no page refresh)
 
 ---
 
-## 🛠️ Setup & Run
+## 🛠️ Local Setup
 
-### Step 1 — Clone & Install
+### Prerequisites
+- Python 3.12
+- Redis server running on localhost:6379
 
+### Installation
+
+**1. Clone the repository**
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/TheScratchCoder/chatapp.git
 cd chatapp
+```
 
+**2. Create virtual environment**
+```bash
+python -m venv venv
+venv\Scripts\activate       # Windows
+source venv/bin/activate    # Mac/Linux
+```
+
+**3. Install dependencies**
+```bash
 pip install -r requirements.txt
 ```
 
-### Step 2 — Start Redis
-
-Make sure Redis is running on localhost:6379
-
+**4. Start Redis**
 ```bash
-# On Mac (Homebrew)
-brew install redis
+# Ubuntu/WSL
+sudo service redis-server start
+
+# Mac
 brew services start redis
-
-# On Ubuntu/Linux
-sudo apt install redis-server
-sudo systemctl start redis
-
-# On Windows — use WSL or download Redis for Windows
 ```
 
-### Step 3 — Run Migrations
-
+**5. Run migrations**
 ```bash
-python manage.py makemigrations
 python manage.py migrate
 ```
 
-### Step 4 — Create Superuser (optional, for admin panel)
-
-```bash
-python manage.py createsuperuser
-```
-
-### Step 5 — Run the Server
-
+**6. Start the server**
 ```bash
 python manage.py runserver
 ```
 
-> **Note:** Daphne (ASGI server) is automatically used because we added
-> `daphne` to INSTALLED_APPS. This enables WebSocket support.
-
-### Step 6 — Open in Browser
-
+**7. Open in browser**
 ```
 http://localhost:8000
 ```
@@ -116,16 +136,15 @@ chatapp/
 │   ├── models.py       # Room & Message models
 │   ├── consumers.py    # ⭐ WebSocket Consumer (real-time logic)
 │   ├── routing.py      # WebSocket URL routing
-│   ├── views.py        # Regular HTTP views
+│   ├── views.py        # HTTP views
 │   ├── forms.py        # Register & Room forms
-│   ├── urls.py         # HTTP URL patterns
 │   └── templates/
 │       └── chat/
-│           ├── base.html        # Base layout
+│           ├── base.html        # Base layout with sidebar
 │           ├── login.html       # Login page
 │           ├── register.html    # Register page
-│           ├── room_list.html   # Home — list of rooms
-│           ├── create_room.html # Create room form
+│           ├── room_list.html   # All rooms
+│           ├── create_room.html # Create room
 │           └── room_detail.html # ⭐ Chat UI + WebSocket JS
 │
 ├── manage.py
@@ -135,50 +154,29 @@ chatapp/
 
 ---
 
-## 🔑 Key Files to Understand
+## 🔑 Key Files Explained
 
 ### `chatproject/asgi.py`
 Routes incoming connections:
-- HTTP requests → Django views (normal)
-- WebSocket requests → Django Channels → ChatConsumer
+- HTTP → Django views (normal)
+- WebSocket → Django Channels → ChatConsumer
 
 ### `chat/consumers.py`
 The heart of real-time messaging:
-- `connect()` — user joins room group in Redis
+- `connect()` — user joins room group in Redis channel layer
 - `receive()` — message received → saved to DB → broadcast to group
 - `disconnect()` — user removed from group
 
 ### `chat/templates/chat/room_detail.html`
-WebSocket client in JavaScript:
-- Opens WebSocket connection on page load
-- Sends messages to server as JSON
-- Receives broadcast messages and renders them in the UI
+WebSocket client:
+- Opens WebSocket on page load
+- Sends messages as JSON
+- Receives broadcasts and renders them instantly
 
 ---
 
-## 💡 Interview Explanation
+## 👨‍💻 Author
 
-> "I built a real-time chat app using Django and Django Channels.
-> By default Django is synchronous (WSGI), but Django Channels upgrades it
-> to ASGI which enables WebSocket support — persistent two-way connections
-> between browser and server. Redis acts as the channel layer, a message bus
-> that broadcasts messages to all users connected to the same room.
-> Messages are also saved to SQLite so history loads when you join a room."
+**Ankit Singh**
+- GitHub: [@TheScratchCoder](https://github.com/TheScratchCoder)
 
----
-
-## 📸 Screenshots
-
-### Home — Room List
-- Clean grid of available chat rooms
-- Create new room button
-
-### Chat Room
-- Real-time messages with WhatsApp-inspired bubbles
-- Your messages appear on the right (green)
-- Others' messages appear on the left (white)
-- Message history loaded from database on join
-
----
-
-## 🙏 Built with ❤️ using Django + Django Channels
