@@ -3,29 +3,15 @@
 ![Python](https://img.shields.io/badge/Python-3.12-blue?style=flat-square&logo=python)
 ![Django](https://img.shields.io/badge/Django-6.0-green?style=flat-square&logo=django)
 ![Django Channels](https://img.shields.io/badge/Django%20Channels-4.3-red?style=flat-square)
-![Redis](https://img.shields.io/badge/Redis-7.0-red?style=flat-square&logo=redis)
 ![WebSocket](https://img.shields.io/badge/WebSocket-Enabled-brightgreen?style=flat-square)
 
-A full-stack real-time chat application built with **Django**, **Django Channels**, and **WebSockets**. Users can register, create chat rooms, and exchange messages instantly without any page refresh.
+A full-stack real-time chat application built with **Django** and **Django Channels**. Users can register, create chat rooms, and exchange messages instantly without any page refresh.
 
 ---
 
 ## 🚀 Live Demo
 
 > Coming soon — [TheScratchCoder.pythonanywhere.com](#)
-
----
-
-## 🖥️ Screenshots
-
-### 🔐 Login Page
-Clean and minimal login interface
-
-### 🏠 Chat Rooms
-Browse and join available chat rooms
-
-### 💬 Chat Room
-Real-time messaging with Slack-inspired UI — messages appear instantly for all users
 
 ---
 
@@ -36,7 +22,7 @@ Real-time messaging with Slack-inspired UI — messages appear instantly for all
 | **Django 6.0** | Core web framework — routing, ORM, authentication |
 | **Django Channels 4.3** | Upgrades Django from WSGI → ASGI for WebSocket support |
 | **Daphne** | ASGI server — handles both HTTP and WebSocket connections |
-| **Redis** | Channel layer — message bus that broadcasts to all room members |
+| **InMemoryChannelLayer** | Built-in channel layer — broadcasts messages to all room members |
 | **SQLite** | Database — stores users, rooms, and message history |
 | **Vanilla JS** | WebSocket client in the browser |
 
@@ -48,9 +34,7 @@ Real-time messaging with Slack-inspired UI — messages appear instantly for all
 Browser (Vanilla JS WebSocket Client)
               ↕  WebSocket
    Django Channels (ASGI via Daphne)
-              ↕  Channel Layer
-            Redis  ←── broadcasts messages to all room members
-              ↕
+              ↕  InMemoryChannelLayer
            SQLite  ←── saves message history
 ```
 
@@ -75,7 +59,6 @@ Browser (Vanilla JS WebSocket Client)
 
 ### Prerequisites
 - Python 3.12
-- Redis server running on localhost:6379
 
 ### Installation
 
@@ -97,26 +80,17 @@ source venv/bin/activate    # Mac/Linux
 pip install -r requirements.txt
 ```
 
-**4. Start Redis**
-```bash
-# Ubuntu/WSL
-sudo service redis-server start
-
-# Mac
-brew services start redis
-```
-
-**5. Run migrations**
+**4. Run migrations**
 ```bash
 python manage.py migrate
 ```
 
-**6. Start the server**
+**5. Start the server**
 ```bash
 python manage.py runserver
 ```
 
-**7. Open in browser**
+**6. Open in browser**
 ```
 http://localhost:8000
 ```
@@ -163,7 +137,7 @@ Routes incoming connections:
 
 ### `chat/consumers.py`
 The heart of real-time messaging:
-- `connect()` — user joins room group in Redis channel layer
+- `connect()` — user joins room group in channel layer
 - `receive()` — message received → saved to DB → broadcast to group
 - `disconnect()` — user removed from group
 
@@ -179,4 +153,3 @@ WebSocket client:
 
 **Ankit Singh**
 - GitHub: [@TheScratchCoder](https://github.com/TheScratchCoder)
-
