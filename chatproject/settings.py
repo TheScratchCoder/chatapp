@@ -67,12 +67,9 @@ DATABASES = {
 # Channel Layer - Redis as message bus
 # Redis broadcasts messages between all connected WebSocket clients
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': [('127.0.0.1', 6379)],  # Redis running on localhost
-        },
-    },
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
