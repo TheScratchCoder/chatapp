@@ -11,7 +11,7 @@ A full-stack real-time chat application built with **Django** and **Django Chann
 
 ## 🚀 Live Demo
 
-> Coming soon — [TheScratchCoder.pythonanywhere.com](#)
+> [TheScratchCoder.pythonanywhere.com](https://TheScratchCoder.pythonanywhere.com)
 
 ---
 
