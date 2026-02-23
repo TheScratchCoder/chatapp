@@ -1,0 +1,24 @@
+{% extends 'chat/base.html' %}
+{% block title %}Create Room{% endblock %}
+
+{% block content %}
+<div style="max-width: 480px; margin: 0 auto;">
+    <div class="card">
+        <h2 style="margin-bottom: 6px; color: #075e54;">Create a New Room 🏠</h2>
+        <p style="color: #888; margin-bottom: 24px; font-size: 0.9rem;">Give your room a name and invite others to join</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Room Name</label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <div class="alert alert-error" style="margin-top:6px">{{ form.name.errors.0 }}</div>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary">Create Room</button>
+            <a href="{% url 'room_list' %}" style="margin-left: 12px; color: #888; font-size: 0.9rem;">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

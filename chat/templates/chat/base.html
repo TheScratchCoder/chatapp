@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ChatApp{% endblock %}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+        }
+
+        /* ── Navbar ── */
+        nav {
+            background: #075e54;
+            color: white;
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        nav .brand { font-size: 1.3rem; font-weight: bold; letter-spacing: 1px; }
+        nav .brand span { color: #25d366; }
+        nav .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 16px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        nav .nav-links a:hover { opacity: 1; text-decoration: underline; }
+
+        /* ── Container ── */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* ── Card ── */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        /* ── Form Styles ── */
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 6px; color: #555; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus { outline: none; border-color: #075e54; }
+
+        /* ── Buttons ── */
+        .btn {
+            padding: 10px 22px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .btn-primary { background: #075e54; color: white; }
+        .btn-primary:hover { background: #054d44; }
+        .btn-secondary { background: #25d366; color: white; }
+        .btn-secondary:hover { background: #1ebe59; }
+
+        /* ── Messages/Alerts ── */
+        .messages { margin-bottom: 16px; }
+        .alert {
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .alert-error { background: #fdecea; color: #c0392b; border: 1px solid #f5c6cb; }
+        .alert-success { background: #e8f5e9; color: #27ae60; border: 1px solid #c3e6cb; }
+
+        {% block extra_styles %}{% endblock %}
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="brand">💬 Chat<span>App</span></div>
+    <div class="nav-links">
+        {% if user.is_authenticated %}
+            <span style="opacity:0.7">Hi, {{ user.username }}</span>
+            <a href="{% url 'room_list' %}">🏠 Rooms</a>
+            <a href="{% url 'create_room' %}">➕ New Room</a>
+            <form method="post" action="{% url 'logout' %}" style="display:inline">
+                {% csrf_token %}
+                <button type="submit" style="background:none; border:none; color:white; cursor:pointer; font-size:0.9rem; opacity:0.9; padding:0; margin-left:16px;">Logout</button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+    </div>
+</nav>
+
+<div class="container">
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

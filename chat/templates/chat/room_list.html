@@ -1,0 +1,65 @@
+{% extends 'chat/base.html' %}
+{% block title %}Chat Rooms{% endblock %}
+
+{% block extra_styles %}
+.room-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+.room-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.15s, box-shadow 0.15s;
+    border-left: 4px solid #25d366;
+    display: block;
+}
+.room-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+.room-card h3 { color: #075e54; margin-bottom: 6px; }
+.room-card .meta { font-size: 0.8rem; color: #aaa; }
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #aaa;
+}
+.empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
+{% endblock %}
+
+{% block content %}
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+    <div>
+        <h1 style="color: #075e54;">💬 Chat Rooms</h1>
+        <p style="color: #888; font-size: 0.9rem;">Select a room to start chatting</p>
+    </div>
+    <a href="{% url 'create_room' %}" class="btn btn-secondary">➕ New Room</a>
+</div>
+
+{% if rooms %}
+    <div class="room-grid">
+        {% for room in rooms %}
+            <a href="{% url 'room_detail' room.slug %}" class="room-card">
+                <h3>#{{ room.name }}</h3>
+                <div class="meta">Created by {{ room.created_by.username }}</div>
+                <div class="meta" style="margin-top: 4px;">{{ room.messages.count }} messages</div>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card">
+        <div class="empty-state">
+            <div class="icon">🏠</div>
+            <h3 style="color: #555; margin-bottom: 8px;">No rooms yet</h3>
+            <p style="margin-bottom: 20px;">Be the first to create a chat room!</p>
+            <a href="{% url 'create_room' %}" class="btn btn-primary">Create First Room</a>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
